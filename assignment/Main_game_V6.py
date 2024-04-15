@@ -374,9 +374,9 @@ while running:
         #movement
         keypress = pygame.key.get_pressed()
         if keypress[pygame.K_LSHIFT] or keypress[pygame.K_RSHIFT]:
-            player_speed = 16
-        else:
             player_speed = 8
+        else:
+            player_speed = 4
         if keypress[pygame.K_LEFT] or keypress[pygame.K_a]:
             player_x -= player_speed
             if player_x < 32:
@@ -443,7 +443,6 @@ while running:
             playing = False
             pause = True
         #pygame.display.update()
-        clock.tick(60)
 
     if pause:
         keypress = pygame.key.get_pressed()
@@ -478,7 +477,9 @@ while running:
         surface.blit(font1.render(death_msg, True, red), (550, 100))
         surface.blit(font1.render(f"you survived for {play_time/1000} seconds", True, red), (450, 400))
         #pygame.display.update()
+
     pygame.display.update()
+    clock.tick(60)
 print("end")
 pygame.quit()
 sys.exit()

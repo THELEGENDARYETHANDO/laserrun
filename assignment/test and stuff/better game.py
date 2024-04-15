@@ -44,11 +44,11 @@ player_y = 400
 player_speed = 8
 
 #column variables
-laser_img = [pygame.image.load("assignment/pictures/laser column0.png"), pygame.image.load("assignment/pictures/laser column1.png"), pygame.image.load("assignment/pictures/laser column2.png"), pygame.image.load("assignment/pictures/laser column3.png")]
+laser_img = [pygame.image.load("assignment/pictures/vert_laser0.png"), pygame.image.load("assignment/pictures/vert_laser1.png"), pygame.image.load("assignment/pictures/vert_laser2.png"), pygame.image.load("assignment/pictures/vert_laser3.png")]
 column_width = 32
 column_height = screen_height
 lasernum = 0
-hlaser_img = [pygame.image.load("assignment/pictures/laser0.png"), pygame.image.load("assignment/pictures/laser1.png"), pygame.image.load("assignment/pictures/laser2.png"), pygame.image.load("assignment/pictures/laser3.png")]
+hlaser_img = [pygame.image.load("assignment/pictures/hori_laser0.png"), pygame.image.load("assignment/pictures/hori_laser1.png"), pygame.image.load("assignment/pictures/hori_laser2.png"), pygame.image.load("assignment/pictures/hori_laser3.png")]
 hcolumn_width = screen_width
 hcolumn_height = 32
 columns = []
