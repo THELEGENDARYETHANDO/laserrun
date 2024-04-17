@@ -100,8 +100,6 @@ player_y = 400
 player_speed = 8
 start_time = 0
 death_msg = ""
-best_time = 0.0
-bomb_mayhem_best_time = 0.0
 play_time = 0
 pause_time = 0
 jump_time = 0
@@ -183,8 +181,6 @@ while running:
         bomb_mayhem = False
         screen.blit(surface, (0, 0))
         surface.blit(title_img, (0, 0))
-        surface.blit(font1.render(f"Best time = {best_time/1000} seconds!", True, black), (screen_width - 300, screen_height - 20))
-        surface.blit(font1.render(f"Bomb mayhem best time = {bomb_mayhem_best_time/1000} seconds!", True, black), (screen_width - 750, screen_height - 20))
         button("The Mystery Button", 500, 0, 240, 32, grey, light_grey, start_fish)
         button("START", screen_width - 272, screen_height - 102, 240, 70, grey, light_grey, start)
         button("Bomb Mayhem", screen_width - 512, screen_height - 102, 240, 70, grey, light_grey, start_bomb_mayhem)
@@ -263,6 +259,8 @@ while running:
         surface.blit(player_img, (player_x, player_y))
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
+            pygame.image.save(surface, "assignment/pictures/screenshot.png")
+            death_img = pygame.image.load("assignment/pictures/screenshot.png")
             death_msg = "Death by laser"
             playing = False
             death = True
@@ -270,6 +268,8 @@ while running:
             name = ""
         elif bomb.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
+            pygame.image.save(surface, "assignment/pictures/screenshot.png")
+            death_img = pygame.image.load("assignment/pictures/screenshot.png")
             death_msg = "Death by bomb"
             playing = False
             death = True
@@ -299,6 +299,7 @@ while running:
 
     if death:
         screen.blit(surface, (0, 0))
+        surface.blit(death_img, (0, 0))
         if len(name) == 3 and update == True:
             if bomb_mayhem != True:
                 update_leaderboard(play_time, leaderboard_dict, name)
@@ -309,14 +310,10 @@ while running:
         bomb.reset()
         vert_laser.reset()
         hori_laser.reset()
-        if play_time > best_time and bomb_mayhem == False:
-            best_time = play_time
-        if play_time > bomb_mayhem_best_time and bomb_mayhem == True:
-            bomb_mayhem_best_time = play_time
         pause_time = 0
         laser_spawn_time = 0
-        #pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 1))
-        surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 150))
+        surface.blit(font1.render("Enter your name", True, red), (screen_width // 2 - font1.render("Enter your name", True, red).get_width() // 2, 150))
+        surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 200))
         button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
         surface.blit(font1.render(death_msg, True, red), (550, 100))
         surface.blit(font1.render(f"you survived for {play_time/1000} seconds", True, red), (450, 400))
