@@ -220,9 +220,9 @@ while running:
         screen.blit(surface, (0, 0))
         keypress = pygame.key.get_pressed()
         surface.fill(blue)
-        fish_game.fish()
+        surface.blit(font1.render("Press f to fish", True, red), (screen_width // 2 - font1.render("Press f to fish", True, red).get_width() // 2, 100))
         if keypress[pygame.K_f]:
-            surface.blit(fish_game.fish_caught, (screen_width/2 - 32, screen_height/2 - 16))
+            surface.blit(fish_game.fish(), (screen_width/2 - 32, screen_height/2 - 16))
         button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish)
 
     if playing:
