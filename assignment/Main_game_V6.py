@@ -97,7 +97,6 @@ def leave_leadeboard():
 player_img = pygame.image.load("assignment/pictures/the guy.png")
 player_x = 604
 player_y = 400
-player_speed = 8
 start_time = 0
 death_msg = ""
 play_time = 0
@@ -146,6 +145,29 @@ def update_leaderboard(score, dict, name):
             score, dict[i+1] = dict[i+1], score
             dict[f"name{i+1}"], name = name, dict[f"name{i+1}"]
 
+def move(x, y):
+    keypress = pygame.key.get_pressed()
+    if keypress[pygame.K_LSHIFT] or keypress[pygame.K_RSHIFT]:
+        player_speed = 8
+    else:
+        player_speed = 4
+    if keypress[pygame.K_LEFT] or keypress[pygame.K_a]:
+        x -= player_speed
+        if x < 32:
+            x = screen_width - 52
+    if keypress[pygame.K_RIGHT] or keypress[pygame.K_d]:
+        x += player_speed
+        if x > screen_width - 40:
+            x = 32
+    if keypress[pygame.K_UP] or keypress[pygame.K_w]:
+        y -= player_speed
+        if y < 32:
+            y = screen_height - 64
+    if keypress[pygame.K_DOWN] or keypress[pygame.K_s]:
+        y += player_speed
+        if y > screen_height - 64:
+            y = 32
+    return(x, y)
 title = True
 playing = False
 death = False
@@ -214,31 +236,14 @@ while running:
 
         #movement
         keypress = pygame.key.get_pressed()
-        if keypress[pygame.K_LSHIFT] or keypress[pygame.K_RSHIFT]:
-            player_speed = 8
-        else:
-            player_speed = 4
-        if keypress[pygame.K_LEFT] or keypress[pygame.K_a]:
-            player_x -= player_speed
-            if player_x < 32:
-                player_x = screen_width - 52
-        if keypress[pygame.K_RIGHT] or keypress[pygame.K_d]:
-            player_x += player_speed
-            if player_x > screen_width - 40:
-                player_x = 32
-        if keypress[pygame.K_UP] or keypress[pygame.K_w]:
-            player_y -= player_speed
-            if player_y < 32:
-                player_y = screen_height - 64
-        if keypress[pygame.K_DOWN] or keypress[pygame.K_s]:
-            player_y += player_speed
-            if player_y > screen_height - 64:
-                player_y = 32
+        (player_x, player_y) = move(player_x, player_y)
 
+        #Lets you jumo over lasers
         if keypress[pygame.K_SPACE] and jump == False:
             jump_time = pygame.time.get_ticks()
             jump = True
             player_img = pygame.image.load("assignment/pictures/the guy jump.png")
+        #makes sure you can't stay in the air forever.
         if timer - jump_time > 500:
             jump = False
             player_img = pygame.image.load("assignment/pictures/the guy.png")
@@ -247,16 +252,16 @@ while running:
         if bomb_mayhem != True:
 
             #Spawns the lasers on the screen and determines if they are harmful or not
-            #laser.spawn(play_time)
             hori_laser.spawn(play_time)
             hori_laser.attack(play_time, surface, transparent_yellow, player_y, jump)
             vert_laser.spawn(play_time)
             vert_laser.attack(play_time, surface, transparent_yellow, player_x, jump)
-            #laser.animation(play_time)
 
+        #Spawns and displays bombs
         bomb.spawn(play_time, bomb_mayhem)
         bomb.attack(play_time, player_x, player_y, surface)
         surface.blit(player_img, (player_x, player_y))
+        #If you get hit by a laser prepares everthing for entering the death screen
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             pygame.image.save(surface, "assignment/pictures/screenshot.png")
@@ -266,6 +271,7 @@ while running:
             death = True
             can_update = True
             name = ""
+        #Same as above but for bombs
         elif bomb.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             pygame.image.save(surface, "assignment/pictures/screenshot.png")
@@ -276,13 +282,15 @@ while running:
             can_update = True
             name = ""
 
+        #Makes the screen shake if a bomb is exploding
         try:
             if bomb.array[0][2] >= 6:
                 surface_rotation = random.uniform(-0.5, 0.5)
         except:
             surface_rotation = 0
+        #displays how long you've been alive for
         surface.blit(font1.render(f"Time: {(play_time)/1000}", True, red), (0, screen_height - 60))
-        #button("QUIT", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), quit)
+        #lets you pause the game
         if keypress[pygame.K_ESCAPE]:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             playing = False
@@ -294,12 +302,15 @@ while running:
         if keypress[pygame.K_p]:
             pause = False
             playing = True
+        #Makes sure the game knows how long you have been paused for
         pause_time = pygame.time.get_ticks() - play_time - start_time
         button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit)
 
     if death:
         screen.blit(surface, (0, 0))
+        #lets you see the frame that you died in.
         surface.blit(death_img, (0, 0))
+        #checks if you have enteres 3 letters for your name and updates the leaderboard
         if len(name) == 3 and update == True:
             if bomb_mayhem != True:
                 update_leaderboard(play_time, leaderboard_dict, name)
@@ -319,6 +330,7 @@ while running:
         surface.blit(font1.render(f"you survived for {play_time/1000} seconds", True, red), (450, 400))
 
     pygame.display.set_caption(f"{int(clock.get_fps())}")
+    #updates the display
     pygame.display.update()
     clock.tick(60)
 print("end")
