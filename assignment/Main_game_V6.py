@@ -3,6 +3,7 @@ import pygame.gfxdraw
 import sys
 import random
 import fish_game
+import classes
 import math
 
 laser_spawn_time = 0
@@ -26,7 +27,6 @@ screen_width = 1240
 screen = pygame.display.set_mode((screen_width,screen_height))
 surface = pygame.Surface((screen_width, screen_height))
 surface_rotation = 0
-rot_surface = pygame.transform.rotate(surface, 0)
 title_img = pygame.image.load("assignment/pictures/Comp Sci game title screen.png")
 background = pygame.image.load("assignment/pictures/Comp sci background.png")
 
@@ -93,162 +93,6 @@ def leave_leadeboard():
     title = True
     leaderboard = False
 
-#laser variables
-class Laser:
-    def __init__(self):
-        self.img_time = 0
-        self.img_num = 0
-    
-    def spawn(self, time):
-        for i in range(time // 10000 + 1):
-            horizontal_laser_coords = Horizontal_Laser.spawn(laser)
-            hori_laser.array.append([horizontal_laser_coords, time])
-        for i in range(time // 7000 + 1):
-            vertical_laser_coords = Vertical_Laser.spawn(laser)
-            vert_laser.array.append([vertical_laser_coords, time])
-
-    def animation(self, time):
-        if time - self.img_time > 25:
-            if self.img_num < 3:
-                self.img_num += 1
-            else:
-                self.img_num = 0
-            self.img_time = time
-
-class Horizontal_Laser(Laser):
-    def __init__(self):
-        super().__init__()
-        self.array = []
-        self.hit = False
-
-    def attack(self, time):
-        for laser in self.array:
-            self.life = time - laser[1]
-            if self.life < 1000:
-                pygame.gfxdraw.box(surface, (0, laser[0], screen_width, 32), transparent_yellow)
-            elif self.life < 3000:
-                self.animation(play_time)
-                self.img = pygame.image.load(f"assignment/pictures/hori_laser{self.img_num}.png")
-                surface.blit(self.img, (0, laser[0]))
-                if player_y < laser[0] + 32 and player_y + 32 > laser[0] and jump != True:
-                    self.hit = True
-            else:
-                self.array.remove(laser)
-    def spawn(self):
-        self.width = screen_width
-        self.height = 32
-        self.y_pos = random.randint(0, screen_height - 32)
-        return (self.y_pos)
-    
-    def reset(self):
-        for laser in self.array:
-            self.array.remove(laser)
-            self.hit = False
-            self.img_time = 0
-
-class Vertical_Laser(Laser):
-    def __init__(self):
-        super().__init__()
-        self.array = []
-        self.hit = False
-
-    def attack(self, time):
-        for laser in self.array:
-            self.life = time - laser[1]
-            if self.life < 1000:
-                pygame.gfxdraw.box(surface, (laser[0], 0, 32, screen_height), transparent_yellow)
-            elif self.life < 3000: 
-                self.animation(play_time)
-                self.img = pygame.image.load(f"assignment/pictures/vert_laser{self.img_num}.png")
-                surface.blit(self.img, (laser[0], 0))
-                if player_x < laser[0] + 20 and player_x + 20 > laser[0] and jump != True:
-                    self.hit = True
-            else:
-                self.array.remove(laser)
-
-    def spawn(self):
-        self.width = 32
-        self.height = screen_height
-        self.x_pos = random.randint(0, screen_width - 32)
-        return (self.x_pos)
-    
-    def reset(self):
-        for laser in self.array:
-            self.array.remove(laser)
-            self.hit = False
-            self.img_time = 0
-
-class Bombs:
-    #initialise the bomb class
-    def __init__(self):
-        self.img_time = 0
-        self.img_num = 0
-        self.spawn_num = 1
-        self.last_spawn_time = 0
-        self.spawn_time = 2500
-        self.array = []
-        self.hit = False
-
-    def spawn(self, time):
-        #Determines how many bombs will spawn at a time
-        if bomb_mayhem == True:
-            self.spawn_num = 1
-        else:
-            self.spawn_num = 2
-        #determines the interval between bomb spawn times (caps out at 100 miliseconds in bomb mayhem)
-        if bomb_mayhem == True:
-            self.spawn_time = 600 - (time // 100) 
-            if self.spawn_time <= 100:
-                self.spawn_time = 100
-        else:
-            self.spawn_time = 2500
-        #Appends the bombs into an array to spawn them
-        if time - self.last_spawn_time > self.spawn_time:
-            for i in range(self.spawn_num):
-                self.array.append([random.randint(-112, screen_width - 144), random.randint(-112, screen_height - 144), 0, 0, 128]) # makes sure the bombs always spawn on the screen
-            self.last_spawn_time = play_time
-
-    def attack(self, time, x, y):
-        for bomb in self.array:
-            if bomb[2] == 6:
-                bomb[4] = 32
-            elif bomb[2] == 7:
-                bomb[4] = 64
-            elif bomb[2] == 8:
-                bomb[4] = 96
-            elif bomb[2] >= 9:
-                bomb[4] = 128
-            if time - bomb[3] > 250:
-                if bomb[2] < 11:
-                    bomb[2] += 1
-                    bomb[3] = time
-                else:
-                    self.array.remove(bomb)
-            bomb_pic = pygame.image.load(f"assignment/pictures/bomb{bomb[2]}.png")
-            surface.blit(bomb_pic, (bomb[0], bomb[1]))
-
-            circle_x = bomb[0] + 128
-            circle_y = bomb[1] + 128
-            circle_r = bomb[4]
-            pygame.gfxdraw.filled_circle(surface, circle_x, circle_y, circle_r, invisible)
-
-            # Calculate the closest point on the rectangle to the circle
-            closest_x = max(x, min(circle_x, x + 20))
-            closest_y = max(y, min(circle_y, y + 32))
-
-            # Calculate the distance between the circle's center and the closest point on the rectangle
-            distance = math.sqrt((circle_x - closest_x) ** 2 + (circle_y - closest_y) ** 2)
-
-            # Check if the distance is less than the circle's radius
-            if distance < circle_r and bomb[2] > 6:
-                self.hit = True
-
-    def reset(self):
-        for bomb in self.array:
-            self.array.remove(bomb)
-            self.hit = False
-            self.last_spawn_time = 0
-
 #player variables
 player_img = pygame.image.load("assignment/pictures/the guy.png")
 player_x = 604
@@ -314,10 +158,11 @@ pause = False
 fishing = False
 jump = False
 
-laser = Laser()
-hori_laser = Horizontal_Laser()
-vert_laser = Vertical_Laser()
-bomb = Bombs()
+laser = classes.Laser()
+hori_laser = classes.Horizontal_Laser()
+vert_laser = classes.Vertical_Laser()
+bomb = classes.Bombs()
+
 #main game loop
 while running:
     for event in pygame.event.get():
@@ -345,7 +190,6 @@ while running:
         button("Bomb Mayhem", screen_width - 512, screen_height - 102, 240, 70, grey, light_grey, start_bomb_mayhem)
         button("Leaderboard", screen_width - 272, 32, 240, 70, grey, light_grey, go_to_leaderboard)
         button("QUIT", 32, screen_height - 102, 240, 70, grey, light_grey, quit)
-        #pygame.display.update()
 
     if leaderboard:
         screen.blit(surface, (0, 0))
@@ -362,9 +206,10 @@ while running:
         if keypress[pygame.K_f]:
             surface.blit(fish_game.fish_caught, (screen_width/2 - 32, screen_height/2 - 16))
         button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish)
-        #pygame.display.update()
 
     if playing:
+        #hori_laser = classes.Horizontal_Laser()
+        #vert_laser = classes.Vertical_Laser()
         rot_surface = pygame.transform.rotate(surface, surface_rotation)
         screen.blit(rot_surface, (0, 0))
         timer = pygame.time.get_ticks()
@@ -404,17 +249,17 @@ while running:
 
         #Makes sure the lasers don't spawn if your playing bomb mayhem
         if bomb_mayhem != True:
-            #Appends the coordinates of lasers that are spawning
-            if play_time - laser_spawn_time > 3000:
-                laser.spawn(play_time)
-                laser_spawn_time = play_time
 
             #Spawns the lasers on the screen and determines if they are harmful or not
-            hori_laser.attack(play_time)
-            vert_laser.attack(play_time)
+            #laser.spawn(play_time)
+            hori_laser.spawn(play_time)
+            hori_laser.attack(play_time, surface, transparent_yellow, player_y, jump)
+            vert_laser.spawn(play_time)
+            vert_laser.attack(play_time, surface, transparent_yellow, player_x, jump)
+            #laser.animation(play_time)
 
-        bomb.spawn(play_time)
-        bomb.attack(play_time, player_x, player_y)
+        bomb.spawn(play_time, bomb_mayhem)
+        bomb.attack(play_time, player_x, player_y, surface)
         surface.blit(player_img, (player_x, player_y))
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
@@ -442,18 +287,18 @@ while running:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             playing = False
             pause = True
-        #pygame.display.update()
 
     if pause:
+        screen.blit(surface, (0, 0))
         keypress = pygame.key.get_pressed()
         if keypress[pygame.K_p]:
             pause = False
             playing = True
         pause_time = pygame.time.get_ticks() - play_time - start_time
         button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit)
-        #pygame.display.update()
 
     if death:
+        screen.blit(surface, (0, 0))
         if len(name) == 3 and update == True:
             if bomb_mayhem != True:
                 update_leaderboard(play_time, leaderboard_dict, name)
@@ -470,14 +315,13 @@ while running:
             bomb_mayhem_best_time = play_time
         pause_time = 0
         laser_spawn_time = 0
-        screen.blit(surface, (0, 0))
         #pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 1))
         surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 150))
         button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
         surface.blit(font1.render(death_msg, True, red), (550, 100))
         surface.blit(font1.render(f"you survived for {play_time/1000} seconds", True, red), (450, 400))
-        #pygame.display.update()
 
+    pygame.display.set_caption(f"{int(clock.get_fps())}")
     pygame.display.update()
     clock.tick(60)
 print("end")
