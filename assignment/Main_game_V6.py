@@ -226,8 +226,6 @@ while running:
         button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish)
 
     if playing:
-        #hori_laser = classes.Horizontal_Laser()
-        #vert_laser = classes.Vertical_Laser()
         rot_surface = pygame.transform.rotate(surface, surface_rotation)
         screen.blit(rot_surface, (0, 0))
         timer = pygame.time.get_ticks()
