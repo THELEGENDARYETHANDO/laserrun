@@ -31,8 +31,7 @@ surface_rotation = 0
 title_background = pygame.image.load("assignment/pictures/Comp Sci game title screen.png")
 background = pygame.image.load("assignment/pictures/Comp sci background.png")
 
-font1 = pygame.font.Font(None, 30)
-font2 = pygame.font.Font(None, 100)
+font = pygame.font.Font(None, 30)
 
 #buttons
 def text(text, font):
@@ -131,9 +130,9 @@ def display_leaderboard(dict, x):
     y = 120
     for i in range(10):
             if dict[i+1] == 0:
-                surface.blit(font1.render("score = N/A", True, blue), (x, y))
+                surface.blit(font.render("score = N/A", True, blue), (x, y))
             else:
-                surface.blit(font1.render(f"score = {dict[i+1] / 1000} seconds by {dict[f'name{i+1}']}", True, blue), (x, y))
+                surface.blit(font.render(f"score = {dict[i+1] / 1000} seconds by {dict[f'name{i+1}']}", True, blue), (x, y))
             i += 1
             y += 40
 def update_leaderboard(score, dict, name):
@@ -215,9 +214,9 @@ while running:
         screen.blit(surface, (0, 0))
         surface.fill(black)
         #displays the leaderboards
-        surface.blit(font1.render("Leaderboard", True, red), (200, 80))
+        surface.blit(font.render("Leaderboard", True, red), (200, 80))
         display_leaderboard(leaderboard_dict, 200)
-        surface.blit(font1.render("Bomb Mayhem Leaderboard", True, red), (600, 80))
+        surface.blit(font.render("Bomb Mayhem Leaderboard", True, red), (600, 80))
         display_leaderboard(bomb_leaderboard_dict, 600)
         button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard)
 
@@ -225,7 +224,7 @@ while running:
         screen.blit(surface, (0, 0))
         keypress = pygame.key.get_pressed()
         surface.fill(blue)
-        surface.blit(font1.render("Press f to fish", True, red), (screen_width // 2 - font1.render("Press f to fish", True, red).get_width() // 2, 100))
+        surface.blit(font.render("Press f to fish", True, red), (screen_width // 2 - font.render("Press f to fish", True, red).get_width() // 2, 100))
         if keypress[pygame.K_f]:
             surface.blit(fish_game.fish(), (screen_width/2 - 32, screen_height/2 - 16))
         button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish)
@@ -293,7 +292,7 @@ while running:
         except:
             surface_rotation = 0
         #displays how long you've been alive for
-        surface.blit(font1.render(f"Time: {(play_time)/1000}", True, red), (0, screen_height - 60))
+        surface.blit(font.render(f"Time: {(play_time)/1000}", True, red), (0, screen_height - 60))
         #lets you pause the game
         if keypress[pygame.K_ESCAPE]:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
@@ -326,11 +325,17 @@ while running:
         vert_laser.reset()
         hori_laser.reset()
         pause_time = 0
-        surface.blit(font1.render("Enter your name", True, red), (screen_width // 2 - font1.render("Enter your name", True, red).get_width() // 2, 150))
-        surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 200))
+        
+        #centres all text and displays them
+        text1_rect = screen_width // 2 - font.render("Enter your name", True, red).get_width() // 2
+        surface.blit(font.render("Enter your name", True, red), (text1_rect, 150))
+        text2_rect = screen_width // 2 - font.render(name, True, red).get_width() // 2
+        surface.blit(font.render(name, True, red), (text2_rect, 200))
+        text3_rect = screen_width // 2 - font.render(death_msg, True, red).get_width() // 2
+        surface.blit(font.render(death_msg, True, red), (text3_rect, 100))
+        text4_rect = screen_width // 2 - font.render(f"you survived for {play_time/1000} seconds", True, red).get_width() // 2
+        surface.blit(font.render(f"you survived for {play_time/1000} seconds", True, red), (text4_rect, 400))
         button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
-        surface.blit(font1.render(death_msg, True, red), (550, 100))
-        surface.blit(font1.render(f"you survived for {play_time/1000} seconds", True, red), (450, 400))
 
     pygame.display.set_caption(f"{int(clock.get_fps())}")
     #updates the display
