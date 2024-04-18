@@ -24,19 +24,21 @@ grey = (100, 100, 100)
 screen_height = 560
 screen_width = 1240
 screen = pygame.display.set_mode((screen_width,screen_height))
+#Makes a sepperate screen to make screenshake easier
 surface = pygame.Surface((screen_width, screen_height))
 surface_rotation = 0
-title_img = pygame.image.load("assignment/pictures/Comp Sci game title screen.png")
+#loads some background pictures
+title_background = pygame.image.load("assignment/pictures/Comp Sci game title screen.png")
 background = pygame.image.load("assignment/pictures/Comp sci background.png")
 
 font1 = pygame.font.Font(None, 30)
 font2 = pygame.font.Font(None, 100)
 
+#buttons
 def text(text, font):
     text_surface = font.render(text, True, white)
     return text_surface, text_surface.get_rect()
 
-#buttons
 def button(message, x, y, w, h, inactive_colour, active_colour, action):
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
@@ -55,39 +57,34 @@ def button(message, x, y, w, h, inactive_colour, active_colour, action):
     text_rect.center = ((x+(w/2)), (y+(h/2)))
     surface.blit(text_surf, text_rect)
 
+#Functions for changing game states
 def start():
     global playing, title, start_time
     playing = True
     title = False
     start_time = pygame.time.get_ticks()
-
 def start_bomb_mayhem():
     global playing, title, start_time, bomb_mayhem
     playing = True
     title = False
     start_time = pygame.time.get_ticks()
     bomb_mayhem = True
-
 def Back_to_title():
     global title, death
     title = True
     death = False
-
 def start_fish():
     global title, fishing
     title = False
     fishing = True
-
 def stop_fish():
     global title, fishing
     title = True
     fishing = False
-
 def go_to_leaderboard():
     global title, leaderboard
     title = False
     leaderboard = True
-
 def leave_leadeboard():
     global title, leaderboard
     title = True
@@ -105,6 +102,7 @@ jump_time = 0
 name = ""
 can_update = False
 update = False
+#Dictionaries to hold leaderboard values
 leaderboard_dict = {1: 0, "name1": "",
                2: 0, "name2": "",
                3: 0, "name3": "",
@@ -128,7 +126,7 @@ bomb_leaderboard_dict = {1: 0, "name1": "",
                10: 0, "name10": ""
                }
 
-
+#Functions to update and display dictionaries
 def display_leaderboard(dict, x):
     y = 80
     for i in range(10):
@@ -138,13 +136,13 @@ def display_leaderboard(dict, x):
                 surface.blit(font1.render(f"score = {dict[i+1] / 1000} seconds by {dict[f'name{i+1}']}", True, blue), (x, y))
             i += 1
             y += 40
-
 def update_leaderboard(score, dict, name):
     for i in range(10):
         if score > dict[i+1]:
             score, dict[i+1] = dict[i+1], score
             dict[f"name{i+1}"], name = name, dict[f"name{i+1}"]
 
+#function to allow player to move
 def move(x, y):
     keypress = pygame.key.get_pressed()
     if keypress[pygame.K_LSHIFT] or keypress[pygame.K_RSHIFT]:
@@ -168,16 +166,19 @@ def move(x, y):
         if y > screen_height - 64:
             y = 32
     return(x, y)
+
+#initialise game states
+running = True
 title = True
 playing = False
 death = False
-running = True
 bomb_mayhem = False
 leaderboard = False
 pause = False
 fishing = False
 jump = False
 
+#Initialise classes
 laser = classes.Laser()
 hori_laser = classes.Horizontal_Laser()
 vert_laser = classes.Vertical_Laser()
@@ -201,7 +202,7 @@ while running:
     if title:
         play_time = 0
         screen.blit(surface, (0, 0))
-        surface.blit(title_img, (0, 0))
+        surface.blit(title_background, (0, 0))
         #renders all the buttons
         button("The Mystery Button", 500, 0, 240, 32, grey, light_grey, start_fish)
         button("START", screen_width - 272, screen_height - 102, 240, 70, grey, light_grey, start)
