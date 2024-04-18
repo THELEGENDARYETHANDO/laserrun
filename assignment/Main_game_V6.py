@@ -30,8 +30,8 @@ screen = pygame.display.set_mode((screen_width,screen_height))
 surface = pygame.Surface((screen_width, screen_height))
 surface_rotation = 0
 #loads some background pictures
-title_background = pygame.image.load("assignment/pictures/Comp Sci game title screen.png")
-background = pygame.image.load("assignment/pictures/Comp sci background.png")
+title_background = pygame.image.load("assignment/pictures/Comp Sci game title screen.png").convert_alpha()
+background = pygame.image.load("assignment/pictures/Comp sci background.png").convert_alpha()
 
 font = pygame.font.Font(None, 30)
 
@@ -73,7 +73,7 @@ def unpause():
     playing = True
 
 #player variables
-player_img = pygame.image.load("assignment/pictures/the guy.png")
+player_img = pygame.image.load("assignment/pictures/the guy.png").convert_alpha()
 stamina = 100
 player_x = 604
 player_y = 400
@@ -201,11 +201,11 @@ while running:
         if keypress[pygame.K_SPACE] and jump == False:
             jump_time = pygame.time.get_ticks()
             jump = True
-            player_img = pygame.image.load("assignment/pictures/the guy jump.png")
+            player_img = pygame.image.load("assignment/pictures/the guy jump.png").convert_alpha()
         #makes sure you can't stay in the air forever.
         if timer - jump_time > 500:
             jump = False
-            player_img = pygame.image.load("assignment/pictures/the guy.png")
+            player_img = pygame.image.load("assignment/pictures/the guy.png").convert_alpha()
 
         #Makes sure the lasers don't spawn if your playing bomb mayhem
         if bomb_mayhem != True:
@@ -225,7 +225,7 @@ while running:
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             pygame.image.save(surface, "assignment/pictures/screenshot.png")
-            death_img = pygame.image.load("assignment/pictures/screenshot.png")
+            death_img = pygame.image.load("assignment/pictures/screenshot.png").convert_alpha()
             death_msg = "Death by laser"
             playing = False
             death = True
@@ -235,7 +235,7 @@ while running:
         elif bomb.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
             pygame.image.save(surface, "assignment/pictures/screenshot.png")
-            death_img = pygame.image.load("assignment/pictures/screenshot.png")
+            death_img = pygame.image.load("assignment/pictures/screenshot.png").convert_alpha()
             death_msg = "Death by bomb"
             playing = False
             death = True
