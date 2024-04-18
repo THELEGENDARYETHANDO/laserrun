@@ -6,7 +6,6 @@ import fish_game
 import classes
 import math
 
-laser_spawn_time = 0
 #init pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -42,7 +41,7 @@ def button(message, x, y, w, h, inactive_colour, active_colour, action):
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
 
-     #check if mouse is hovering over buttons
+    #check if mouse is hovering over buttons and triggers the action if the mouse is clicked
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(surface, active_colour, (x, y, w, h))
         if click [0] == 1 and action != None:
@@ -50,8 +49,9 @@ def button(message, x, y, w, h, inactive_colour, active_colour, action):
     else:
         pygame.draw.rect(surface, inactive_colour, (x, y, w, h))
 
-    small_text = pygame.font.SysFont('arial', 20)
-    text_surf, text_rect = text(message, small_text)
+    #makes the text written on the button centered
+    font = pygame.font.SysFont(None, 30)
+    text_surf, text_rect = text(message, font)
     text_rect.center = ((x+(w/2)), (y+(h/2)))
     surface.blit(text_surf, text_rect)
 
@@ -199,10 +199,9 @@ while running:
             print(name)
 
     if title:
-        play_time = 0
-        bomb_mayhem = False
         screen.blit(surface, (0, 0))
         surface.blit(title_img, (0, 0))
+        #renders all the buttons
         button("The Mystery Button", 500, 0, 240, 32, grey, light_grey, start_fish)
         button("START", screen_width - 272, screen_height - 102, 240, 70, grey, light_grey, start)
         button("Bomb Mayhem", screen_width - 512, screen_height - 102, 240, 70, grey, light_grey, start_bomb_mayhem)
@@ -212,6 +211,7 @@ while running:
     if leaderboard:
         screen.blit(surface, (0, 0))
         surface.fill(black)
+        #displays the leaderboards
         display_leaderboard(leaderboard_dict, 200)
         display_leaderboard(bomb_leaderboard_dict, 600)
         button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard)
@@ -228,9 +228,10 @@ while running:
     if playing:
         rot_surface = pygame.transform.rotate(surface, surface_rotation)
         screen.blit(rot_surface, (0, 0))
+        surface.blit(background, (0, 0))
+        #Handles how long you've been playing for.
         timer = pygame.time.get_ticks()
         play_time = timer - start_time - pause_time
-        surface.blit(background, (0, 0))
 
         #movement
         keypress = pygame.key.get_pressed()
@@ -319,8 +320,9 @@ while running:
         bomb.reset()
         vert_laser.reset()
         hori_laser.reset()
+        play_time = 0
         pause_time = 0
-        laser_spawn_time = 0
+        bomb_mayhem = False
         surface.blit(font1.render("Enter your name", True, red), (screen_width // 2 - font1.render("Enter your name", True, red).get_width() // 2, 150))
         surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 200))
         button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
