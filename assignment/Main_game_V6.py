@@ -14,6 +14,7 @@ clock = pygame.time.Clock()
 #colours
 red = (255, 0, 0)
 blue = (0, 0, 255)
+yellow = (255, 255, 0)
 transparent_yellow = (255, 255, 0, 100)
 invisible = (0, 0, 0, 0)
 white = (255, 255, 255)
@@ -92,6 +93,7 @@ def leave_leadeboard():
 
 #player variables
 player_img = pygame.image.load("assignment/pictures/the guy.png")
+stamina = 100
 player_x = 604
 player_y = 400
 death_msg = ""
@@ -212,9 +214,7 @@ while running:
         timer = pygame.time.get_ticks()
         play_time = timer - start_time - pause_time
 
-        #movement
         keypress = pygame.key.get_pressed()
-        (player_x, player_y) = movement.move(player_x, player_y)
 
         #Lets you jumo over lasers
         if keypress[pygame.K_SPACE] and jump == False:
@@ -239,6 +239,7 @@ while running:
         bomb.spawn(play_time, bomb_mayhem)
         bomb.attack(play_time, player_x, player_y, surface)
         surface.blit(player_img, (player_x, player_y))
+        player_x, player_y, stamina = movement.move(player_x, player_y, stamina, surface, yellow)
         #If you get hit by a laser prepares everthing for entering the death screen
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
