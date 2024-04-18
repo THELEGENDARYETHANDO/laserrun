@@ -128,7 +128,7 @@ bomb_leaderboard_dict = {1: 0, "name1": "",
 
 #Functions to update and display dictionaries
 def display_leaderboard(dict, x):
-    y = 80
+    y = 120
     for i in range(10):
             if dict[i+1] == 0:
                 surface.blit(font1.render("score = N/A", True, blue), (x, y))
@@ -201,6 +201,7 @@ while running:
 
     if title:
         play_time = 0
+        bomb_mayhem = False
         screen.blit(surface, (0, 0))
         surface.blit(title_background, (0, 0))
         #renders all the buttons
@@ -214,7 +215,9 @@ while running:
         screen.blit(surface, (0, 0))
         surface.fill(black)
         #displays the leaderboards
+        surface.blit(font1.render("Leaderboard", True, red), (200, 80))
         display_leaderboard(leaderboard_dict, 200)
+        surface.blit(font1.render("Bomb Mayhem Leaderboard", True, red), (600, 80))
         display_leaderboard(bomb_leaderboard_dict, 600)
         button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard)
 
@@ -323,7 +326,6 @@ while running:
         vert_laser.reset()
         hori_laser.reset()
         pause_time = 0
-        bomb_mayhem = False
         surface.blit(font1.render("Enter your name", True, red), (screen_width // 2 - font1.render("Enter your name", True, red).get_width() // 2, 150))
         surface.blit(font1.render(name, True, red), (screen_width // 2 - font1.render(name, True, red).get_width() // 2, 200))
         button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
