@@ -133,7 +133,7 @@ def display_leaderboard(dict, x):
     y = 80
     for i in range(10):
             if dict[i+1] == 0:
-                surface.blit(font1.render(f"score = N/A", True, blue), (x, y))
+                surface.blit(font1.render("score = N/A", True, blue), (x, y))
             else:
                 surface.blit(font1.render(f"score = {dict[i+1] / 1000} seconds by {dict[f'name{i+1}']}", True, blue), (x, y))
             i += 1
@@ -199,6 +199,7 @@ while running:
             print(name)
 
     if title:
+        play_time = 0
         screen.blit(surface, (0, 0))
         surface.blit(title_img, (0, 0))
         #renders all the buttons
@@ -320,7 +321,6 @@ while running:
         bomb.reset()
         vert_laser.reset()
         hori_laser.reset()
-        play_time = 0
         pause_time = 0
         bomb_mayhem = False
         surface.blit(font1.render("Enter your name", True, red), (screen_width // 2 - font1.render("Enter your name", True, red).get_width() // 2, 150))
