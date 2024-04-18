@@ -37,5 +37,4 @@ def move(x, y, stamina, plane, colour):
         y += player_speed
         if y > screen_height - 64:
             y = 32
-    print(stamina)
     return(x, y, stamina - drain)
