@@ -4,6 +4,7 @@ import sys
 import random
 import fish_game
 import classes
+import movement
 import math
 
 #init pygame
@@ -93,7 +94,6 @@ def leave_leadeboard():
 player_img = pygame.image.load("assignment/pictures/the guy.png")
 player_x = 604
 player_y = 400
-start_time = 0
 death_msg = ""
 play_time = 0
 pause_time = 0
@@ -140,31 +140,6 @@ def update_leaderboard(score, dict, name):
         if score > dict[i+1]:
             score, dict[i+1] = dict[i+1], score
             dict[f"name{i+1}"], name = name, dict[f"name{i+1}"]
-
-#function to allow player to move
-def move(x, y):
-    keypress = pygame.key.get_pressed()
-    if keypress[pygame.K_LSHIFT] or keypress[pygame.K_RSHIFT]:
-        player_speed = 8
-    else:
-        player_speed = 4
-    if keypress[pygame.K_LEFT] or keypress[pygame.K_a]:
-        x -= player_speed
-        if x < 32:
-            x = screen_width - 52
-    if keypress[pygame.K_RIGHT] or keypress[pygame.K_d]:
-        x += player_speed
-        if x > screen_width - 40:
-            x = 32
-    if keypress[pygame.K_UP] or keypress[pygame.K_w]:
-        y -= player_speed
-        if y < 32:
-            y = screen_height - 64
-    if keypress[pygame.K_DOWN] or keypress[pygame.K_s]:
-        y += player_speed
-        if y > screen_height - 64:
-            y = 32
-    return(x, y)
 
 #initialise game states
 running = True
@@ -239,7 +214,7 @@ while running:
 
         #movement
         keypress = pygame.key.get_pressed()
-        (player_x, player_y) = move(player_x, player_y)
+        (player_x, player_y) = movement.move(player_x, player_y)
 
         #Lets you jumo over lasers
         if keypress[pygame.K_SPACE] and jump == False:
@@ -340,7 +315,7 @@ while running:
     pygame.display.set_caption(f"{int(clock.get_fps())}")
     #updates the display
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(30)
 print("end")
 pygame.quit()
 sys.exit()
