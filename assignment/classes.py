@@ -10,21 +10,6 @@ class Laser:
     def __init__(self):
         self.img_time = 0
         self.img_num = 0
-    #    self.spawn_time = 0
-    #    self.hori_array = []
-    #    self.vert_array = []
-    
-    #def spawn(self, time):
-    #    if time - self.spawn_time > 3000:
-    #        for i in range(time // 10000 + 1):
-    #            #horizontal_laser_coords = Horizontal_Laser.spawn(laser)
-    #            horizontal_laser_coords = random.randint(0, screen_height - 32)
-    #            self.hori_array.append([horizontal_laser_coords, time, 0])
-    #        for i in range(time // 7000 + 1):
-    #            #vertical_laser_coords = Vertical_Laser.spawn(laser)
-    #            vertical_laser_coords = random.randint(0, screen_width - 32)
-    #            self.vert_array.append([vertical_laser_coords, time, 0])
-    #        self.spawn_time = time
 
     def animation(self, time):
         if time - self.img_time > 25:
