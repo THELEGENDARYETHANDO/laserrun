@@ -5,7 +5,7 @@ import random
 import fish_game
 import classes
 import movement
-import math
+import buttons
 
 #init pygame
 pygame.init()
@@ -34,29 +34,6 @@ title_background = pygame.image.load("assignment/pictures/Comp Sci game title sc
 background = pygame.image.load("assignment/pictures/Comp sci background.png")
 
 font = pygame.font.Font(None, 30)
-
-#buttons
-def text(text, font):
-    text_surface = font.render(text, True, white)
-    return text_surface, text_surface.get_rect()
-
-def button(message, x, y, w, h, inactive_colour, active_colour, action):
-    click = pygame.mouse.get_pressed()
-    mouse = pygame.mouse.get_pos()
-
-    #check if mouse is hovering over buttons and triggers the action if the mouse is clicked
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(surface, active_colour, (x, y, w, h))
-        if click [0] == 1 and action != None:
-            action()
-    else:
-        pygame.draw.rect(surface, inactive_colour, (x, y, w, h))
-
-    #makes the text written on the button centered
-    font = pygame.font.SysFont(None, 30)
-    text_surf, text_rect = text(message, font)
-    text_rect.center = ((x+(w/2)), (y+(h/2)))
-    surface.blit(text_surf, text_rect)
 
 #Functions for changing game states
 def start():
@@ -185,11 +162,11 @@ while running:
         screen.blit(surface, (0, 0))
         surface.blit(title_background, (0, 0))
         #renders all the buttons
-        button("The Mystery Button", 500, 0, 240, 32, grey, light_grey, start_fish)
-        button("START", screen_width - 272, screen_height - 102, 240, 70, grey, light_grey, start)
-        button("Bomb Mayhem", screen_width - 512, screen_height - 102, 240, 70, grey, light_grey, start_bomb_mayhem)
-        button("Leaderboard", screen_width - 272, 32, 240, 70, grey, light_grey, go_to_leaderboard)
-        button("QUIT", 32, screen_height - 102, 240, 70, grey, light_grey, quit)
+        buttons.button("The Mystery Button", 500, 0, 240, 32, grey, light_grey, start_fish, surface)
+        buttons.button("START", screen_width - 272, screen_height - 102, 240, 70, grey, light_grey, start, surface)
+        buttons.button("Bomb Mayhem", screen_width - 512, screen_height - 102, 240, 70, grey, light_grey, start_bomb_mayhem, surface)
+        buttons.button("Leaderboard", screen_width - 272, 32, 240, 70, grey, light_grey, go_to_leaderboard, surface)
+        buttons.button("QUIT", 32, screen_height - 102, 240, 70, grey, light_grey, quit, surface)
 
     if leaderboard:
         screen.blit(surface, (0, 0))
@@ -199,7 +176,7 @@ while running:
         display_leaderboard(leaderboard_dict, 200)
         surface.blit(font.render("Bomb Mayhem Leaderboard", True, red), (600, 80))
         display_leaderboard(bomb_leaderboard_dict, 600)
-        button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard)
+        buttons.button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard, surface)
 
     if fishing:
         screen.blit(surface, (0, 0))
@@ -208,7 +185,7 @@ while running:
         surface.blit(font.render("Press f to fish", True, red), (screen_width // 2 - font.render("Press f to fish", True, red).get_width() // 2, 100))
         if keypress[pygame.K_f]:
             surface.blit(fish_game.fish(), (screen_width/2 - 32, screen_height/2 - 16))
-        button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish)
+        buttons.button("Stop fishing :(", 0, 0, 240, 70, (100, 100, 100), (200, 200, 200), stop_fish, surface)
 
     if playing:
         rot_surface = pygame.transform.rotate(surface, surface_rotation)
@@ -283,8 +260,8 @@ while running:
         screen.blit(surface, (0, 0))
         #Makes sure the game knows how long you have been paused for
         pause_time = pygame.time.get_ticks() - play_time - start_time
-        button("RESUME", 500, 200, 240, 70, (100, 100, 100), (200, 200, 200), unpause)
-        button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit)
+        buttons.button("RESUME", 500, 200, 240, 70, (100, 100, 100), (200, 200, 200), unpause, surface)
+        buttons.button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit, surface)
 
     if death:
         screen.blit(surface, (0, 0))
@@ -312,7 +289,7 @@ while running:
         surface.blit(font.render(death_msg, True, red), (text3_rect, 100))
         text4_rect = screen_width // 2 - font.render(f"you survived for {play_time/1000} seconds", True, red).get_width() // 2
         surface.blit(font.render(f"you survived for {play_time/1000} seconds", True, red), (text4_rect, 400))
-        button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title)
+        buttons.button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title, surface)
 
     pygame.display.set_caption(f"{int(clock.get_fps())}")
     #updates the display
