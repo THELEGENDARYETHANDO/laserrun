@@ -90,6 +90,10 @@ def leave_leadeboard():
     global title, leaderboard
     title = True
     leaderboard = False
+def unpause():
+    global pause, playing
+    pause = False
+    playing = True
 
 #player variables
 player_img = pygame.image.load("assignment/pictures/the guy.png")
@@ -216,7 +220,7 @@ while running:
 
         keypress = pygame.key.get_pressed()
 
-        #Lets you jumo over lasers
+        #Lets you jump over lasers
         if keypress[pygame.K_SPACE] and jump == False:
             jump_time = pygame.time.get_ticks()
             jump = True
@@ -277,12 +281,9 @@ while running:
 
     if pause:
         screen.blit(surface, (0, 0))
-        keypress = pygame.key.get_pressed()
-        if keypress[pygame.K_p]:
-            pause = False
-            playing = True
         #Makes sure the game knows how long you have been paused for
         pause_time = pygame.time.get_ticks() - play_time - start_time
+        button("RESUME", 500, 200, 240, 70, (100, 100, 100), (200, 200, 200), unpause)
         button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit)
 
     if death:
