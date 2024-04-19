@@ -75,6 +75,7 @@ def unpause():
 #player variables
 player_img = pygame.image.load("assignment/pictures/the guy.png").convert_alpha()
 stamina = 100
+exhaustion = 0
 player_x = 604
 player_y = 400
 death_msg = ""
@@ -177,7 +178,7 @@ while running:
         surface.blit(font.render("Bomb Mayhem Leaderboard", True, red), (600, 80))
         display_leaderboard(bomb_leaderboard_dict, 600)
         buttons.button("back to title", 0, 0, 240, 70, grey, light_grey, leave_leadeboard, surface)
-
+    
     if fishing:
         screen.blit(surface, (0, 0))
         keypress = pygame.key.get_pressed()
@@ -220,7 +221,7 @@ while running:
         bomb.spawn(play_time, bomb_mayhem)
         bomb.attack(play_time, player_x, player_y, surface)
         surface.blit(player_img, (player_x, player_y))
-        player_x, player_y, stamina = movement.move(player_x, player_y, stamina, surface, yellow)
+        player_x, player_y, stamina, exhaustion = movement.move(player_x, player_y, stamina, surface, yellow, exhaustion)
         #If you get hit by a laser prepares everthing for entering the death screen
         if hori_laser.hit or vert_laser.hit:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
@@ -249,7 +250,8 @@ while running:
         except:
             surface_rotation = 0
         #displays how long you've been alive for
-        surface.blit(font.render(f"Time: {(play_time)/1000}", True, red), (0, screen_height - 60))
+        surface.blit(font.render(f"Time: {(play_time)/1000}", True, red), (40, screen_height - 90))
+        surface.blit(font.render("Press esc to pause", True, red), (40, screen_height - 60))
         #lets you pause the game
         if keypress[pygame.K_ESCAPE]:
             pygame.gfxdraw.box(surface, (0, 0, screen_width, screen_height), (0, 0, 0, 200))
@@ -260,6 +262,10 @@ while running:
         screen.blit(surface, (0, 0))
         #Makes sure the game knows how long you have been paused for
         pause_time = pygame.time.get_ticks() - play_time - start_time
+        screen.blit(font.render("Run to the side of the screen to wrap around", True, white), (50, 50))
+        screen.blit(font.render("Press Space to jump over lasers", True, white), (50, 80))
+        screen.blit(font.render("Hold shift to sprint", True, white), (50, 110))
+        screen.blit(font.render("That yellow bar above your head is your stamina", True, white), (50, 140))
         buttons.button("RESUME", 500, 200, 240, 70, (100, 100, 100), (200, 200, 200), unpause, surface)
         buttons.button("QUIT", 500, 400, 240, 70, (100, 100, 100), (200, 200, 200), quit, surface)
 
@@ -279,16 +285,21 @@ while running:
         vert_laser.reset()
         hori_laser.reset()
         pause_time = 0
+        exhaustion = 0
+        stamina = 100
         
         #centres all text and displays them
         text1_rect = screen_width // 2 - font.render("Enter your name", True, red).get_width() // 2
-        surface.blit(font.render("Enter your name", True, red), (text1_rect, 150))
+        surface.blit(font.render("Enter your name", True, red), (text1_rect, 120))
         text2_rect = screen_width // 2 - font.render(name, True, red).get_width() // 2
-        surface.blit(font.render(name, True, red), (text2_rect, 200))
+        surface.blit(font.render(name, True, red), (text2_rect, 170))
         text3_rect = screen_width // 2 - font.render(death_msg, True, red).get_width() // 2
-        surface.blit(font.render(death_msg, True, red), (text3_rect, 100))
+        surface.blit(font.render(death_msg, True, red), (text3_rect, 70))
         text4_rect = screen_width // 2 - font.render(f"you survived for {play_time/1000} seconds", True, red).get_width() // 2
         surface.blit(font.render(f"you survived for {play_time/1000} seconds", True, red), (text4_rect, 400))
+        text5_rect = screen_width // 2 - font.render("Press enter to lock in your name", True, red).get_width() // 2
+        if len(name) == 3:
+            surface.blit(font.render("Press enter to lock in your name", True, red), (text5_rect, 200))
         buttons.button("Back to Title", (screen_width - 240)/2, (screen_height - 70)/2, 240, 70, (100, 100, 100), (200, 200, 200), Back_to_title, surface)
 
     pygame.display.set_caption(f"{int(clock.get_fps())}")

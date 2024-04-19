@@ -15,8 +15,8 @@ screen_width = 1240
 screen = pygame.display.set_mode((screen_width,screen_height))
 surface = pygame.Surface((screen_width, screen_height))
 rot_surface = pygame.transform.rotate(surface, 0)
-title_img = pygame.image.load("assignment\pictures\Comp Sci game title screen.png")
-background = pygame.image.load("assignment\pictures\Comp sci background.png")
+title_img = pygame.image.load("assignmentpictures\Comp Sci game title screen.png")
+background = pygame.image.load("assignmentpictures\Comp sci background.png")
 
 font1 = pygame.font.Font(None, 30)
 font2 = pygame.font.Font(None, 100)
@@ -60,7 +60,7 @@ def Back_to_title():
     death = False
 
 #player variables
-player_img = pygame.image.load("assignment/pictures/the guy.png")
+player_img = pygame.image.load("assignmentpictures/the guy.png")
 player_x = 604
 player_y = 400
 player_speed = 8
@@ -70,11 +70,11 @@ best_time = 0.0
 play_time = 0
 
 #column variables
-laser_img = [pygame.image.load("assignment/pictures/laser column0.png"), pygame.image.load("assignment/pictures/laser column1.png"), pygame.image.load("assignment/pictures/laser column2.png"), pygame.image.load("assignment/pictures/laser column3.png")]
+laser_img = [pygame.image.load("assignmentpictures/laser column0.png"), pygame.image.load("assignmentpictures/laser column1.png"), pygame.image.load("assignmentpictures/laser column2.png"), pygame.image.load("assignmentpictures/laser column3.png")]
 laser_width = 32
 laser_height = screen_height
 lasernum = 0
-hlaser_img = [pygame.image.load("assignment/pictures/laser0.png"), pygame.image.load("assignment/pictures/laser1.png"), pygame.image.load("assignment/pictures/laser2.png"), pygame.image.load("assignment/pictures/laser3.png")]
+hlaser_img = [pygame.image.load("assignmentpictures/laser0.png"), pygame.image.load("assignmentpictures/laser1.png"), pygame.image.load("assignmentpictures/laser2.png"), pygame.image.load("assignmentpictures/laser3.png")]
 hlaser_width = screen_width
 hlaser_height = 32
 laser_img_seconds = 0

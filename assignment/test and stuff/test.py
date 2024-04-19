@@ -12,7 +12,7 @@ screen_width = 1240
 screen = pygame.display.set_mode((screen_width,screen_height))
 
 #player data
-player_img = pygame.image.load("assignment/the guy.png")
+player_img = pygame.image.load("pictures/the guy.png")
 player_x = 604
 player_y = 400
 player_speed = 8
