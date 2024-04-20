@@ -40,7 +40,7 @@ class Horizontal_Laser(Laser):
                 pygame.gfxdraw.box(plane, (0, laser[0], screen_width, 32), colour)
             elif laser[2] < 3000:
                 self.animation(pygame.time.get_ticks())
-                img = pygame.image.load(f"assignment/pictures/hori_laser{self.img_num}.png")
+                img = pygame.image.load(f"assignment/pictures/hori_laser{self.img_num}.png").convert_alpha()
                 plane.blit(img, (0, laser[0]))
                 if y < laser[0] + 32 and y + 32 > laser[0] and jump != True:
                     self.hit = True
@@ -75,7 +75,7 @@ class Vertical_Laser(Laser):
                 pygame.gfxdraw.box(plane, (laser[0], 0, 32, screen_height), colour)
             elif laser[2] < 3000: 
                 self.animation(pygame.time.get_ticks())
-                img = pygame.image.load(f"assignment/pictures/vert_laser{self.img_num}.png")
+                img = pygame.image.load(f"assignment/pictures/vert_laser{self.img_num}.png").convert_alpha()
                 plane.blit(img, (laser[0], 0))
                 if x < laser[0] + 20 and x + 20 > laser[0] and jump != True:
                     self.hit = True
@@ -138,7 +138,7 @@ class Bombs:
                     bomb[3] = time
                 else:
                     self.array.remove(bomb)
-            bomb_pic = pygame.image.load(f"assignment/pictures/bomb{bomb[2]}.png")
+            bomb_pic = pygame.image.load(f"assignment/pictures/bomb{bomb[2]}.png").convert_alpha()
             plane.blit(bomb_pic, (bomb[0], bomb[1]))
 
             circle_x = bomb[0] + 128 #gets the x coord in the middle of the bomb

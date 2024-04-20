@@ -1,40 +1,5 @@
-def rotate_90_clockwise(matrix):
-    """
-    Rotate a 2D matrix by 90 degrees clockwise.
-    
-    Args:
-    matrix (list of list): The input 2D matrix.
-    
-    Returns:
-    list of list: The rotated matrix.
-    """
-    if not matrix or len(matrix) == 0:
-        return []
-    
-    rows = len(matrix)
-    cols = len(matrix[0])
-    
-    # Create a new matrix to store the rotated values
-    rotated_matrix = [[0] * rows for _ in range(cols)]
-    
-    # Rotate the matrix
-    for i in range(rows):
-        for j in range(cols):
-            rotated_matrix[j][rows - i - 1] = matrix[i][j]
-    
-    return rotated_matrix
-
-# Example usage:
-matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-]
-rotated_matrix = rotate_90_clockwise(matrix)
-for row in rotated_matrix:
-    print(row)
-
 import pygame
+
 # Initialize Pygame 
 pygame.init()
 
@@ -67,6 +32,8 @@ font_small = pygame.font.Font(None, 24)
 # Player wins
 player_wins = {1: 0, 2: 0}
 
+turn = 1
+
 # Function to draw the game board
 def draw_board(board):
     board_width = COLUMN_COUNT * SQUARE_SIZE
@@ -95,45 +62,21 @@ def draw_board(board):
             screen.blit(win_counter_text, (board_x + board_width + win_counter_offset, win_counter_offset))
 
 
-def rotate_board_clockwise(board):
-    print("hi")
-    rows = len(board)
-    columns = len(board[0])
-    rotated_board = [[0]*rows for _ in range(columns)]
-    for i in range(rows):
-        for j in range(columns):
-            rotated_board[j][rows - i - 1] = board[i][j]
-    for row in rotated_board:
-        print(row)
-    print("")
-    return rotated_board
-
 # Token class
 class Token:
     def __init__(self, color):
         self.color = color
 
-    def place_token(self, board, mouse_x):
-        col = mouse_x // SQUARE_SIZE  # Calculate the column based on the mouse click position
-        if 0 <= col < COLUMN_COUNT:  # Check if column is within bounds
-            for row in range(ROW_COUNT - 1, -1, -1):  # Iterate over rows from the bottom up
-                if board[row][col] == 0:  # If the cell is empty in the clicked column
-                    board[row][col] = self.color  # Place the token in that row
-                    return row, col  # Return the position of the placed token
-        return None, None  # Return None if token cannot be placed
-
-
-# Token class
-class Token:
-    def __init__(self, color):
-        self.color = color
-
-    def place_token(self, board, col):
+    def place_token(self, board, col, turn):
         for row in range(ROW_COUNT - 1, -1, -1):  # Iterate over rows from the bottom up
             if board[row][col] == 0:  # If the cell is empty in the clicked column
                 board[row][col] = self.color  # Place the token in that row
-                return row, col  # Return the position of the placed token
-        return None, None  # Return None if column is full
+                if turn == 1:
+                    turn = 2
+                else:
+                    turn = 1
+                return row, col, turn  # Return the position of the placed token
+        return None, None, turn  # Return None if column is full
 
     def check_win(self, board, row, col):
         # Check horizontally
@@ -162,6 +105,58 @@ class Token:
 
         return False
 
+def rotate_board_clockwise(board):
+    rows = len(board)
+    columns = len(board[0])
+    rotated_board = [[0]*rows for _ in range(columns)]
+    for i in range(rows):
+        for j in range(columns):
+            rotated_board[j][rows - i - 1] = board[i][j]
+    return rotated_board
+
+def fall(board):
+    for row in range(len(board) - 1):  # Iterate over rows except the first one, starting from the bottom
+        for col in range(len(board[0])):  # Iterate over columns
+            if board[row][col] == 1 and board[row + 1][col] == 0:
+                board[row][col] = 0
+                board[row + 1][col] = 1
+
+    for row in range(len(board) - 1):  # Iterate over rows except the first one, starting from the bottom
+        for col in range(len(board[0])):  # Iterate over columns
+            if board[row][col] == 2 and board[row + 1][col] == 0:
+                board[row][col] = 0
+                board[row + 1][col] = 2
+
+def check_connect_four(board):
+    # Check horizontally
+    for row in range(ROW_COUNT):
+        for col in range(COLUMN_COUNT - 3):
+            if board[row][col] != 0 and \
+               board[row][col] == board[row][col + 1] == board[row][col + 2] == board[row][col + 3]:
+                return True
+
+    # Check vertically
+    for col in range(COLUMN_COUNT):
+        for row in range(ROW_COUNT - 3):
+            if board[row][col] != 0 and \
+               board[row][col] == board[row + 1][col] == board[row + 2][col] == board[row + 3][col]:
+                return True
+
+    # Check diagonally (positive slope)
+    for row in range(ROW_COUNT - 3):
+        for col in range(COLUMN_COUNT - 3):
+            if board[row][col] != 0 and \
+               board[row][col] == board[row + 1][col + 1] == board[row + 2][col + 2] == board[row + 3][col + 3]:
+                return True
+
+    # Check diagonally (negative slope)
+    for row in range(3, ROW_COUNT):
+        for col in range(COLUMN_COUNT - 3):
+            if board[row][col] != 0 and \
+               board[row][col] == board[row - 1][col + 1] == board[row - 2][col + 2] == board[row - 3][col + 3]:
+                return True
+
+    return False
 
 # Main menu screen
 def main_menu():
@@ -206,6 +201,20 @@ winner = None
 rotate_button = font_medium.render("ROTATE", True, BLACK)  # Black rotate button
 rotate_button_rect = rotate_button.get_rect(topleft=(10, 10))
 
+# Inside the main game loop
+
+rungame = True
+playing_game = False  # Flag to indicate if the game is currently being played
+token1 = Token(1)  # Player 1's token (Red)
+token2 = Token(2)  # Player 2's token (Yellow)
+current_token = token1  # Start with player 1
+game_over = False
+winner = None
+rotation_performed = False  # Flag to track whether rotation has been performed in the current turn
+
+rotate_button = font_medium.render("ROTATE", True, BLACK)  # Black rotate button
+rotate_button_rect = rotate_button.get_rect(topleft=(10, 10))
+
 main_menu()
 while rungame:
     for event in pygame.event.get():
@@ -221,16 +230,24 @@ while rungame:
                 else:
                     if not game_over:
                         col = (mouse_x - (SCREEN_WIDTH - COLUMN_COUNT * SQUARE_SIZE) // 2) // SQUARE_SIZE  # Calculate the clicked column
-                        row, col = current_token.place_token(board, col)
-                        if row is not None and col is not None:  # Check if token was placed successfully
-                            if current_token.check_win(board, row, col):
-                                game_over = True
-                                winner = "Player 1" if current_token == token1 else "Player 2"
-                                player_wins[current_token.color] += 1
-                            elif all(board[i][j] != 0 for i in range(ROW_COUNT) for j in range(COLUMN_COUNT)):
-                                game_over = True
-                                winner = "Draw"
-                            current_token = token2 if current_token == token1 else token1
+                        if not rotation_performed and rotate_button_rect.collidepoint(mouse_x, mouse_y):
+                            # Rotate button clicked and rotation not performed in this turn
+                            board = rotate_board_clockwise(board)
+                            rotation_performed = True
+                        elif 0 <= col < COLUMN_COUNT:  # Check if click is within the grid
+                            row, col, turn = current_token.place_token(board, col, turn)
+                            if row is not None and col is not None:  # Check if token was placed successfully
+                                if current_token.check_win(board, row, col) or check_connect_four(board):
+                                    # Check for win or connect 4 after placing the token
+                                    game_over = True
+                                    winner = "Player 1" if current_token == token1 else "Player 2"
+                                    player_wins[current_token.color] += 1
+                                elif all(board[i][j] != 0 for i in range(ROW_COUNT) for j in range(COLUMN_COUNT)):
+                                    # Check for draw if the board is full
+                                    game_over = True
+                                    winner = "Draw"
+                                current_token = token2 if current_token == token1 else token1
+                                rotation_performed = False  # Reset rotation flag for the next turn
                     else:
                         if SCREEN_WIDTH // 2 - 150 < mouse_x < SCREEN_WIDTH // 2 + 150 and SCREEN_HEIGHT // 2 < mouse_y < SCREEN_HEIGHT // 2 + 50:
                             # PLAY AGAIN button clicked
@@ -245,11 +262,9 @@ while rungame:
 
     screen.fill(WHITE)
     if playing_game:
-        keypress = pygame.key.get_pressed()
-        if keypress[pygame.K_r]:
-            # Rotate button clicked
-            board = rotate_board_clockwise(board)
         draw_board(board)
+        fall(board)
+        screen.blit(font_medium.render(f"player{turn} turn", True, RED), (30, 300))
         screen.blit(rotate_button, rotate_button_rect)  # Draw rotate button
     if game_over:
         game_over_screen(winner)
