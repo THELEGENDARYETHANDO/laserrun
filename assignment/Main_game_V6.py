@@ -9,7 +9,6 @@ import buttons
 
 #init pygame
 pygame.init()
-pygame.mixer.init()
 clock = pygame.time.Clock()
 
 #colours
@@ -143,8 +142,6 @@ hori_laser = classes.Horizontal_Laser()
 vert_laser = classes.Vertical_Laser()
 bomb = classes.Bombs()
 
-musicprep = 0
-
 #main game loop
 while running:
     for event in pygame.event.get():
@@ -158,13 +155,6 @@ while running:
                 can_update = False
             elif len(name) < 3:
                 name += event.unicode
-            print(name)
-
-    musicprep += 1
-    if musicprep == 1:
-        
-        pygame.mixer.music.load("assignment\sound/4_drop_one.wav")
-        pygame.mixer.music.play(-1)
 
     if title:
         play_time = 0
