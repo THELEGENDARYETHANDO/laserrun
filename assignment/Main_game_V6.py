@@ -245,7 +245,7 @@ while running:
         #Makes the screen shake if a bomb is exploding
         try:
             if bomb.array[0][2] >= 6:
-                surface_rotation = random.uniform(-0.5, 0.5)
+                surface_rotation = random.randint(-50, 50)/100
         except:
             surface_rotation = 0
         #displays how long you've been alive for
