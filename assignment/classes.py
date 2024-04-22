@@ -52,6 +52,7 @@ class Horizontal_Laser(Laser):
             self.array.remove(laser)
             self.hit = False
             self.img_time = 0
+            self.spawn_time = 0
 
 class Vertical_Laser(Laser):
     def __init__(self):
@@ -81,12 +82,13 @@ class Vertical_Laser(Laser):
                     self.hit = True
             else:
                 self.array.remove(laser)
-    
+
     def reset(self):
         for laser in self.array:
             self.array.remove(laser)
             self.hit = False
             self.img_time = 0
+            self.spawn_time = 0
 
 class Bombs:
     #initialise the bomb class
